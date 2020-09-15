@@ -1,0 +1,28 @@
+{
+  "contacts": [
+    {
+      "id": 1,
+      "firstName": "Alex",
+      "lastName": "Kotov",
+      "email": "alexko@in6k.com"
+    },
+    {
+      "firstName": "Вова",
+      "lastName": "Гриценко",
+      "email": "",
+      "id": 2
+    },
+    {
+      "firstName": "Саша",
+      "lastName": "Чунарев",
+      "email": "",
+      "id": 3
+    },
+    {
+      "firstName": "Vika",
+      "lastName": "",
+      "email": "",
+      "id": 4
+    }
+  ]
+}
