@@ -41,9 +41,9 @@ function ContactList(props) {
                 title,
                 createElement('span', {}, `${contacts.length}`)
             ),
-            createElement('div', {class: 'contacts'},
+            contacts.length ? createElement('div', {class: 'contacts'},
                 contacts.map(contact => createElement(Contact, {contact}))
-            )
+            ) : createElement('p', {class: 'no-contacts'}, 'No contacts yet 😿')
         )
     );
 }
