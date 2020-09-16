@@ -48,16 +48,6 @@ function ContactList(props) {
     );
 }
 
-const contactForm = document.forms['contact'];
-
-contactForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const formData = new FormData(contactForm);
-    const contact = Object.fromEntries(formData.entries());
-    createContact(contact)
-    .then(appendContact, alert)
-    .then(_ => contactForm.reset())
-})
 
 const contactsEndpoint = 'http://localhost:3000/contacts';
 
@@ -72,18 +62,60 @@ function createContact(contact) {
     .then(response => response.json())
 }
 
-fetch(contactsEndpoint)
-    .then(response => response.json())
-    .then(contacts => {
-        const lists = [
-            ContactList({
-                title: 'Contacts',
-                contacts
-            }),
-            ContactList({
-                title: 'Favorites',
-                contacts: contacts.filter(c => c.favorite)
-            })
-        ]
-        document.body.prepend(...lists);
-    });
+
+class App {
+
+    constructor() {
+        this.contacts = [];
+    }
+
+    render() {
+        const { contacts } = this;
+        return (
+            createElement(Fragment, {}, 
+                createElement(ContactList, { title: 'Contacts', contacts }),
+                createElement(ContactList, { 
+                    title: 'Favorites', 
+                    contacts: contacts.filter(c => c.favorite) }
+                ),
+                createElement('aside', {}, 
+                    createElement(ContactForm)
+                )
+            )
+        );
+    }
+}
+
+function Fragment() {
+    return document.createDocumentFragment();
+}
+
+const app = new App();
+const root = document.getElementById('root');
+root.appendChild(app.render());
+
+// fetch(contactsEndpoint)
+//     .then(response => response.json())
+//     .then(contacts => {
+//     });
+
+function submitContactFormHandler(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+    const contact = Object.fromEntries(formData.entries());
+    createContact(contact)
+    .then(appendContact, alert)
+    .then(_ => this.reset())
+}
+
+function ContactForm(props) {
+    return (
+        createElement('form', {onsubmit: submitContactFormHandler},
+            createElement('h1', {}, 'New Contact'),
+            createElement('input', { type: 'text', name: 'firstName', placeholder: 'First name' }),
+            createElement('input', { type: 'text', name: 'lastName', placeholder: 'Last name' }),
+            createElement('input', { type: 'text', name: 'email', placeholder: 'Email' }),
+            createElement('button', {type: 'submit'}, 'Add')
+        )
+    )
+}

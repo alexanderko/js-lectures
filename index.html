@@ -28,7 +28,7 @@
         }
         section span::before { content: '('; }
         section span::after { content: ')'; }
-        body {
+        #root {
             display: flex;
             justify-content: space-around;
         }
@@ -42,15 +42,7 @@
     </style>
 </head>
 <body>
-    <aside>
-        <form name="contact">
-            <h1>New Contact</h1>
-            <input type="text" name="firstName" placeholder="First name">
-            <input type="text" name="lastName" placeholder="Last name">
-            <input type="text" name="email" placeholder="Email">
-            <button type="submit">Add</button>
-        </form>
-    </aside>
+    <div id="root"></div>
     <script type="text/javascript" src="contacts.js"></script>
 </body>
 </html>
