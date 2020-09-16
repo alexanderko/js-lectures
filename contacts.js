@@ -3,7 +3,12 @@ function createElement(tagOrFn, props, ...children) {
     if (typeof tagOrFn === 'string') {
         element = document.createElement(tagOrFn);
         for(let attr in props) { 
-            element.setAttribute(attr, props[attr]);
+            let value = props[attr];
+            if (typeof value === 'function') {
+                element[attr] = value;
+            } else {
+                element.setAttribute(attr, value);
+            }
         }
     } else {
         element = tagOrFn(props);
@@ -51,7 +56,7 @@ function ContactList(props) {
 
 const contactsEndpoint = 'http://localhost:3000/contacts';
 
-function createContact(contact) {
+function postContact(contact) {
     return fetch(contactsEndpoint, {
         method: 'POST', 
         headers:  {
@@ -73,13 +78,22 @@ class App extends Component {
 
     constructor() {
         super();
-        this.state = { contacts: []};
+        this.state = { contacts: [] };
+        this.createContact = this.createContact.bind(this);
     }
 
     componentDidMount() {
         fetch(contactsEndpoint)
             .then(response => response.json())
             .then(contacts => { this.setState({contacts}) });
+    }
+
+    createContact(contact) {
+        const {contacts} = this.state;
+        postContact(contact)
+            .then(contact => this.setState({
+                contacts: [...contacts, contact]
+            }), alert);
     }
 
     render() {
@@ -92,7 +106,7 @@ class App extends Component {
                     contacts: contacts.filter(c => c.favorite) }
                 ),
                 createElement('aside', {}, 
-                    createElement(ContactForm)
+                    createElement(ContactForm, {onsubmit: this.createContact})
                 )
             )
         );
@@ -113,18 +127,17 @@ app.markForUpdate = () => {
     root.appendChild(app.render());
 }
 
-function submitContactFormHandler(event) {
-    event.preventDefault();
-    const formData = new FormData(this);
-    const contact = Object.fromEntries(formData.entries());
-    createContact(contact)
-    .then(appendContact, alert)
-    .then(_ => this.reset())
-}
-
 function ContactForm(props) {
+    const { onsubmit } = props;
+    const submitHandler = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const contact = Object.fromEntries(formData.entries());
+        onsubmit(contact);
+        event.target.reset();
+    };
     return (
-        createElement('form', {onsubmit: submitContactFormHandler},
+        createElement('form', { onsubmit: submitHandler },
             createElement('h1', {}, 'New Contact'),
             createElement('input', { type: 'text', name: 'firstName', placeholder: 'First name' }),
             createElement('input', { type: 'text', name: 'lastName', placeholder: 'Last name' }),
