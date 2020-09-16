@@ -8,14 +8,20 @@ function Contact(props) {
     return contactElement;
 }
 
-const contactListElement = document.getElementById('contacts')
-function appendContact(contact) {
-    let contactElement = Contact({ contact });
-    contactListElement.appendChild(contactElement);
+function ContactList(props) {
+    const { title, contacts } = props;
+    const root = document.createElement('section');
+    root.innerHTML = `<h1>${title} <span>(${contacts.length})</span></h1>`
+    const list = document.createElement('div')
+    list.setAttribute('class', 'contacts');
+    contacts
+        .map(contact => Contact({contact}))
+        .forEach(node => list.appendChild(node));
+    root.appendChild(list);
+    return root;
 }
 
 const contactForm = document.forms['contact'];
-
 
 contactForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -41,9 +47,16 @@ function createContact(contact) {
 
 fetch(contactsEndpoint)
     .then(response => response.json())
-    .then(contacts => contacts.forEach(appendContact))
-    .catch(handleError)
-
-function handleError() {
-    contactListElement.innerText = "Can't load contacts :(";
-}
+    .then(contacts => {
+        const lists = [
+            ContactList({
+                title: 'Contacts',
+                contacts
+            }),
+            ContactList({
+                title: 'Favorites',
+                contacts: contacts.filter(c => c.favorite)
+            })
+        ]
+        document.body.prepend(...lists);
+    });

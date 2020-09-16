@@ -10,13 +10,15 @@
       "firstName": "Вова",
       "lastName": "Гриценко",
       "email": "",
-      "id": 2
+      "id": 2,
+      "favorite": true
     },
     {
       "firstName": "Саша",
       "lastName": "Чунарев",
       "email": "",
-      "id": 3
+      "id": 3,
+      "favorite": true
     },
     {
       "firstName": "Vika",
