@@ -62,15 +62,28 @@ function createContact(contact) {
     .then(response => response.json())
 }
 
+class Component {
+    setState(changes) {
+        Object.assign(this.state, changes);
+        this.markForUpdate();
+    }
+}
 
-class App {
+class App extends Component {
 
     constructor() {
-        this.contacts = [];
+        super();
+        this.state = { contacts: []};
+    }
+
+    componentDidMount() {
+        fetch(contactsEndpoint)
+            .then(response => response.json())
+            .then(contacts => { this.setState({contacts}) });
     }
 
     render() {
-        const { contacts } = this;
+        const { contacts } = this.state;
         return (
             createElement(Fragment, {}, 
                 createElement(ContactList, { title: 'Contacts', contacts }),
@@ -93,11 +106,12 @@ function Fragment() {
 const app = new App();
 const root = document.getElementById('root');
 root.appendChild(app.render());
+app.componentDidMount();
 
-// fetch(contactsEndpoint)
-//     .then(response => response.json())
-//     .then(contacts => {
-//     });
+app.markForUpdate = () => {
+    root.innerHTML = '';
+    root.appendChild(app.render());
+}
 
 function submitContactFormHandler(event) {
     event.preventDefault();
