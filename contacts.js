@@ -1,24 +1,51 @@
+function createElement(tagOrFn, props, ...children) {
+    let element;
+    if (typeof tagOrFn === 'string') {
+        element = document.createElement(tagOrFn);
+        for(let attr in props) { 
+            element.setAttribute(attr, props[attr]);
+        }
+    } else {
+        element = tagOrFn(props);
+    }
+
+    for (let child of children) {
+        if (child === null) continue;
+        if (Array.isArray(child)) {
+            element.append(...child);
+        } else {
+            element.append(child);
+        }
+    }
+
+    return element;
+}
+
 function Contact(props) {
     const { firstName, lastName, email} = props.contact;
-    const contactElement = document.createElement('p');
-    contactElement.innerText = `${firstName} ${lastName}`;
-    if (email && email.length) {
-        contactElement.innerHTML += `<a href="mailto:${email}">&lt;${email}&gt;</a>`;
-    }
-    return contactElement;
+    return createElement('p', {},
+        `${firstName} ${lastName}`,
+        email && email.length ? createElement(EmailLink, {email}) : null
+    );
+}
+
+function EmailLink({ email }) {
+    return createElement('a', { href: `mailto:${email}` }, `<${email}>`);
 }
 
 function ContactList(props) {
     const { title, contacts } = props;
-    const root = document.createElement('section');
-    root.innerHTML = `<h1>${title} <span>(${contacts.length})</span></h1>`
-    const list = document.createElement('div')
-    list.setAttribute('class', 'contacts');
-    contacts
-        .map(contact => Contact({contact}))
-        .forEach(node => list.appendChild(node));
-    root.appendChild(list);
-    return root;
+    return (
+        createElement('section', {}, 
+            createElement('h1', {}, 
+                title,
+                createElement('span', {}, `${contacts.length}`)
+            ),
+            createElement('div', {class: 'contacts'},
+                contacts.map(contact => createElement(Contact, {contact}))
+            )
+        )
+    );
 }
 
 const contactForm = document.forms['contact'];

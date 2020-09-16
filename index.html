@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JavaScript Intro</title>
     <style>
-        #contacts p a {
+        .contacts p a {
             display: block;
             font-size: 75%;
         }
@@ -22,9 +22,12 @@
             margin: 2rem;
         }
         section span {
+            padding-left: 0.5em;
             font-size: 0.7em;
             color: lightgray;
         }
+        section span::before { content: '('; }
+        section span::after { content: ')'; }
         body {
             display: flex;
             justify-content: space-around;
