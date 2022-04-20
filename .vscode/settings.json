@@ -1,0 +1,8 @@
+{
+    "slides.vscodeSettings": {
+        "debug.console.fontSize": 24,        
+        "breadcrumbs.enabled": false,
+        "editor.fontSize": 24
+    },
+    "slides.folder": "node",
+}
