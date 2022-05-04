@@ -5,4 +5,6 @@
         "editor.fontSize": 24
     },
     "slides.folder": "node",
+    "editor.fontSize": 18,
+    "debug.console.fontSize": 18,
 }
